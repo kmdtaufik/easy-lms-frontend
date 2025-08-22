@@ -11,13 +11,15 @@ export function useSignOut() {
       fetchOptions: {
         onSuccess: () => {
           router.push("/");
-          toast.push("Signed out successfully", { theme: "dark" });
+          toast.success("Signed out successfully", { theme: "dark" });
         },
         onError: (error) => {
-          toast.push("Error signing out.");
+          toast.error(error.message);
+          if (process.env.NODE_ENV !== "production")
+            console.log("Sign out error: ", error);
         },
       },
     });
   };
-  return { handleSignOut };
+  return handleSignOut;
 }

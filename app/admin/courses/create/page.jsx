@@ -1,4 +1,5 @@
 "use client";
+import { RichTextEditor } from "@/components/Editor/RichTextEditor";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -8,17 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  courseCategories,
-  courseLevel,
-  courseSchema,
-  courseStatus,
-} from "@/lib/zodSchemas";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
-import z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
   Form,
   FormControl,
   FormField,
@@ -27,9 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Sparkle } from "lucide-react";
-import slugify from "slugify";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -37,9 +24,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PlusIcon } from "lucide-react";
-import { RichTextEditor } from "@/components/Editor/RichTextEditor";
-import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  courseCategories,
+  courseLevel,
+  courseSchema,
+  courseStatus,
+} from "@/lib/zodSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, PlusIcon, Sparkle } from "lucide-react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import slugify from "slugify";
 
 export default function CreateCoursePage() {
   const form = useForm({
@@ -149,13 +145,8 @@ export default function CreateCoursePage() {
                     {" "}
                     <FormLabel>Description</FormLabel>{" "}
                     <FormControl>
-                      {/* <Textarea */}
-                      {/*   placeholder="Description" */}
-                      {/*   {...field} */}
-                      {/*   className={"min-h-[120px]"} */}
-                      {/* /> */}
-                      {/* <RichTextEditor /> */}
-                    </FormControl>{" "}
+                      <RichTextEditor />
+                    </FormControl>
                     <FormMessage />{" "}
                   </FormItem>
                 )}
