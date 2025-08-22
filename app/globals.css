@@ -1,7 +1,9 @@
 /* Imports */
 @import "tailwindcss";
 @import "tw-animate-css";
-
+/* tiptap css*/
+@import "../styles/_variables.scss";
+@import "../styles/_keyframe-animations.scss";
 /* Dark mode variant */
 @custom-variant dark (&:is(.dark *));
 
