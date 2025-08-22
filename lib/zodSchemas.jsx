@@ -3,6 +3,22 @@ import { z } from "zod";
 // enum arrays (as const tuples)
 export const courseLevel = ["Beginner", "Intermediate", "Advanced"];
 export const courseStatus = ["Draft", "Published", "Archived"];
+export const courseCategories = [
+  "Development",
+  "Design",
+  "IT & Software",
+  "Marketing",
+  "Business",
+  "Health",
+  "Lifestyle",
+  "Education",
+  "Finance",
+  "Health & Fitness",
+  "Music",
+  "AI",
+];
+
+// Zod schema for course creation
 
 export const courseSchema = z.object({
   title: z
@@ -23,12 +39,10 @@ export const courseSchema = z.object({
     .min(1, { message: "Duration must be at least 1 hour" }),
 
   level: z.enum(courseLevel, {
-    errorMap: () => ({
-      message: "Level must be Beginner, Intermediate, or Advanced",
-    }),
+    message: "Level must be Beginner, Intermediate, or Advanced",
   }),
 
-  category: z.string().min(1, { message: "Category is required" }),
+  category: z.enum(courseCategories, { message: "Category is required" }),
 
   smallDescription: z
     .string()
