@@ -65,7 +65,7 @@ export function UserDropdown({ email, name, image }) {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard">
+            <Link href="/admin">
               <LayoutDashboardIcon
                 size={16}
                 className="opacity-60"

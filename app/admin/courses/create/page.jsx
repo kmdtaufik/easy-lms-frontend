@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/select";
 import { PlusIcon } from "lucide-react";
 import { RichTextEditor } from "@/components/Editor/RichTextEditor";
+import { FileUploader } from "@/components/uploader/file-uploader";
 
 export default function CreateCoursePage() {
   const form = useForm({
@@ -148,7 +149,7 @@ export default function CreateCoursePage() {
                     {" "}
                     <FormLabel>Description</FormLabel>{" "}
                     <FormControl>
-                      <RichTextEditor {...field} />
+                      <RichTextEditor field={field} />
                     </FormControl>{" "}
                     <FormMessage />{" "}
                   </FormItem>
@@ -162,7 +163,7 @@ export default function CreateCoursePage() {
                     {" "}
                     <FormLabel>Thumbnail Image</FormLabel>{" "}
                     <FormControl>
-                      <Input placeholder="thumbnail url" {...field} />
+                      <FileUploader value={field.value || []} />
                     </FormControl>{" "}
                     <FormMessage />{" "}
                   </FormItem>
