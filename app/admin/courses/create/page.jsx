@@ -16,7 +16,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -40,18 +40,26 @@ import {
 import { PlusIcon } from "lucide-react";
 import { RichTextEditor } from "@/components/Editor/RichTextEditor";
 import { FileUploader } from "@/components/uploader/file-uploader";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { authClient } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 export default function CreateCoursePage() {
+  const [isPending, setIsLoading] = useState(false);
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(courseSchema),
     defaultValues: {
       title: "",
       description: "",
-      filekey: "",
+      fileKey: "",
       price: 0,
       duration: 0,
       level: "Beginner",
-      category: "Development",
+      category: "Development", // Fixed: should be 'category' not 'catagory'
       status: "Draft",
       slug: "",
       smallDescription: "",
@@ -59,19 +67,74 @@ export default function CreateCoursePage() {
   });
 
   function onSubmit(data) {
-    if (process.env.NODE_ENV === "development") {
-      console.log("Form Data:", data);
-    }
+    setIsLoading(true);
+
+    (async () => {
+      try {
+        // Get current user from auth client
+        const { data: session } = await authClient.getSession();
+        if (!session?.user?.id) {
+          toast.error("You must be logged in to create a course");
+          setIsLoading(false);
+          return;
+        }
+
+        const submittedData = {
+          ...data,
+          createdBy: session.user.id, // Use actual user ID from session
+        };
+
+        console.log("submitted data:", submittedData);
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/product`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              // Add authorization header if needed
+              // Authorization: `Bearer ${session.token}`, // Adjust based on your auth setup
+            },
+            body: JSON.stringify(submittedData),
+          },
+        );
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => null);
+          toast.error(errorData?.message || "Failed to create course");
+          setIsLoading(false);
+          return;
+        }
+
+        const result = await res.json();
+        if (process.env.NODE_ENV === "development") {
+          console.log("Server Response:", result);
+        }
+
+        toast.success("Course created successfully!");
+        form.reset();
+
+        // Redirect to courses list or course detail page
+        router.push("/admin/courses");
+      } catch (error) {
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error:", error);
+        }
+        toast.error("An unexpected error occurred");
+      } finally {
+        setIsLoading(false);
+      }
+    })();
   }
 
   return (
     <>
       <div className="flex items-center flex-row gap-4">
         <Link
-          href={"/admin/courses"}
+          href="/admin/courses"
           className={buttonVariants({ variant: "outline", size: "icon" })}
         >
-          <ArrowLeft className="size-4"></ArrowLeft>{" "}
+          <ArrowLeft className="size-4" />
         </Link>
         <h1 className="text-2xl font-bold">Course Information</h1>
       </div>
@@ -83,105 +146,115 @@ export default function CreateCoursePage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {" "}
               <FormField
                 control={form.control}
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    {" "}
-                    <FormLabel>Title</FormLabel>{" "}
+                    <FormLabel>Title</FormLabel>
                     <FormControl>
                       <Input placeholder="Title" {...field} />
-                    </FormControl>{" "}
-                    <FormMessage />{" "}
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
+
               <div className="flex gap-4 items-end">
                 <FormField
                   control={form.control}
                   name="slug"
                   render={({ field }) => (
-                    <FormItem className={"w-full"}>
-                      {" "}
-                      <FormLabel>Slug</FormLabel>{" "}
+                    <FormItem className="w-full">
+                      <FormLabel>Slug</FormLabel>
                       <FormControl>
                         <Input placeholder="slug" {...field} />
-                      </FormControl>{" "}
-                      <FormMessage />{" "}
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <Button
                   type="button"
                   onClick={() => {
-                    const slug = slugify(form.getValues("title"));
-                    form.setValue("slug", slug, { shouldValidate: true });
+                    const title = form.getValues("title");
+                    if (title) {
+                      const slug = slugify(title, {
+                        lower: true,
+                        strict: true,
+                      });
+                      form.setValue("slug", slug, { shouldValidate: true });
+                    } else {
+                      toast.error("Please enter a title first");
+                    }
                   }}
                 >
-                  Generate <Sparkle className="ml-1 size-4" />{" "}
+                  Generate <Sparkle className="ml-1 size-4" />
                 </Button>
               </div>
+
               <FormField
                 control={form.control}
                 name="smallDescription"
                 render={({ field }) => (
-                  <FormItem className={"w-full"}>
-                    {" "}
-                    <FormLabel>Small Description</FormLabel>{" "}
+                  <FormItem className="w-full">
+                    <FormLabel>Small Description</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Small Description"
                         {...field}
-                        className={"min-h-[120px]"}
+                        className="min-h-[120px]"
                       />
-                    </FormControl>{" "}
-                    <FormMessage />{" "}
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="description"
                 render={({ field }) => (
-                  <FormItem className={"w-full"}>
-                    {" "}
-                    <FormLabel>Description</FormLabel>{" "}
+                  <FormItem className="w-full">
+                    <FormLabel>Description</FormLabel>
                     <FormControl>
                       <RichTextEditor field={field} />
-                    </FormControl>{" "}
-                    <FormMessage />{" "}
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
-                name="filekey"
+                name="fileKey"
                 render={({ field }) => (
-                  <FormItem className={"w-full"}>
-                    {" "}
-                    <FormLabel>Thumbnail Image</FormLabel>{" "}
+                  <FormItem className="w-full">
+                    <FormLabel>Thumbnail Image</FormLabel>
                     <FormControl>
-                      <FileUploader value={field.value || []} />
-                    </FormControl>{" "}
-                    <FormMessage />{" "}
+                      <FileUploader
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className="grid  grid-cols-1 md:grid-cols-2 gap-4">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="category"
                   render={({ field }) => (
-                    <FormItem className={"w-full"}>
-                      <FormLabel>Category</FormLabel>{" "}
+                    <FormItem className="w-full">
+                      <FormLabel>Category</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className={"w-full"}>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select Category" />
                           </SelectTrigger>
                         </FormControl>
@@ -197,18 +270,19 @@ export default function CreateCoursePage() {
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="level"
                   render={({ field }) => (
-                    <FormItem className={"w-full"}>
-                      <FormLabel>Level</FormLabel>{" "}
+                    <FormItem className="w-full">
+                      <FormLabel>Level</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className={"w-full"}>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select Level" />
                           </SelectTrigger>
                         </FormControl>
@@ -224,56 +298,73 @@ export default function CreateCoursePage() {
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="duration"
                   render={({ field }) => (
-                    <FormItem className={"w-full"}>
-                      <FormLabel>Duration (hours)</FormLabel>{" "}
+                    <FormItem className="w-full">
+                      <FormLabel>Duration (hours)</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Duration"
-                          type={"number"}
+                          type="number"
+                          min="0"
+                          step="0.5"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value) || 0)
+                          }
                         />
-                      </FormControl>{" "}
-                      <FormMessage />{" "}
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
-                />{" "}
+                />
+
                 <FormField
                   control={form.control}
                   name="price"
                   render={({ field }) => (
-                    <FormItem className={"w-full"}>
-                      <FormLabel>Price</FormLabel>{" "}
+                    <FormItem className="w-full">
+                      <FormLabel>Price</FormLabel>
                       <FormControl>
-                        <Input placeholder="Price" type={"number"} {...field} />
-                      </FormControl>{" "}
-                      <FormMessage />{" "}
+                        <Input
+                          placeholder="Price"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value) || 0)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+
               <FormField
                 control={form.control}
                 name="status"
                 render={({ field }) => (
-                  <FormItem className={"w-full"}>
-                    <FormLabel>Status</FormLabel>{" "}
+                  <FormItem className="w-full">
+                    <FormLabel>Status</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className={"w-full"}>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select Status" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {courseStatus.map((level) => (
-                          <SelectItem key={level} value={level}>
-                            {level}
+                        {courseStatus.map((status) => (
+                          <SelectItem key={status} value={status}>
+                            {status}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -282,12 +373,21 @@ export default function CreateCoursePage() {
                   </FormItem>
                 )}
               />
-              <Button>
-                {" "}
-                Create Course <PlusIcon className="ml-1 size-4" />{" "}
+
+              <Button disabled={isPending} type="submit">
+                {isPending ? (
+                  <>
+                    Creating...
+                    <Loader2 size={16} className="animate-spin ml-2" />
+                  </>
+                ) : (
+                  <>
+                    Create Course <PlusIcon className="ml-1 size-4" />
+                  </>
+                )}
               </Button>
             </form>
-          </Form>{" "}
+          </Form>
         </CardContent>
       </Card>
     </>

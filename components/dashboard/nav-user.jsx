@@ -36,7 +36,6 @@ export function NavUser() {
 
   //Session
   const { data: session } = authClient.useSession();
-
   //get initials
   function getInitials(name) {
     if (!name) return "U"; // fallback

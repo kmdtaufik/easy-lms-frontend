@@ -14,7 +14,7 @@ import {
 } from "./render-state";
 import { toast } from "sonner";
 
-export function FileUploader() {
+export function FileUploader({ onChange, value }) {
   const [fileState, setFileState] = useState({
     error: false,
     file: "",
@@ -23,6 +23,7 @@ export function FileUploader() {
     progress: 0,
     isDeleting: false,
     fileType: "image",
+    key: value,
   });
 
   //upload files
@@ -86,6 +87,8 @@ export function FileUploader() {
               uploading: false,
               key: key,
             }));
+            //set value to field
+            onChange?.(key);
             toast.success("File uploaded successfully");
             resolve();
           } else {
@@ -164,6 +167,9 @@ export function FileUploader() {
       if (fileState.objectURL && !fileState.objectURL.startsWith("http")) {
         URL.revokeObjectURL(fileState.objectURL);
       }
+      //change field value
+      onChange?.("");
+
       setFileState({
         error: false,
         file: "",
