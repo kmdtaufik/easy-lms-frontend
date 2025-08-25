@@ -40,6 +40,7 @@ export function FileUploader({ onChange, value }) {
         `${process.env.NEXT_PUBLIC_API_URL}/api/product/s3/upload`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -152,6 +153,7 @@ export function FileUploader({ onChange, value }) {
         `${process.env.NEXT_PUBLIC_API_URL}/api/product/s3/delete`,
         {
           method: "DELETE",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },

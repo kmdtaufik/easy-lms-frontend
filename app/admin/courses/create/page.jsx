@@ -90,11 +90,11 @@ export default function CreateCoursePage() {
           `${process.env.NEXT_PUBLIC_API_URL}/api/product`,
           {
             method: "POST",
+            credentials: true,
             headers: {
               "Content-Type": "application/json",
-              // Add authorization header if needed
-              // Authorization: `Bearer ${session.token}`, // Adjust based on your auth setup
             },
+
             body: JSON.stringify(submittedData),
           },
         );
