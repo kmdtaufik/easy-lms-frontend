@@ -1,13 +1,29 @@
 "use client";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { SiteHeader } from "@/components/dashboard/site-header";
+import CSSLoader from "@/components/loader/loader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { isAdmin } from "@/lib/user";
+import { authClient } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AdminLayout({ children }) {
+  const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
-  if (!isAdmin()) return router.push("/");
+
+  useEffect(() => {
+    // Only redirect after we know the session status
+    if (!isPending && (!session || session?.user?.role !== "admin")) {
+      router.push("/");
+    }
+  }, [session, isPending, router]);
+
+  // Show loader while checking auth or if redirect is happening
+  if (isPending || !session || session?.user?.role !== "admin") {
+    return <CSSLoader />;
+  }
+
+  // User is authenticated and is admin
   return (
     <SidebarProvider
       style={{
