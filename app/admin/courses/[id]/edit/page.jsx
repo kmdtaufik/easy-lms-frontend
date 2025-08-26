@@ -52,7 +52,7 @@ export default async function EditCoursePage({ params }) {
               <CardDescription>Edit Structure Info</CardDescription>
             </CardHeader>
             <CardContent>
-              <CourseStructure />
+              <CourseStructure course={course} />
             </CardContent>
           </Card>
         </TabsContent>
