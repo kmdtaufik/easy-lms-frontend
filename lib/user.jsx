@@ -6,13 +6,17 @@ export const fetchSession = async () => {
       withCredentials: true, // important to send cookies
     });
 
-    console.log("Session:", response.data);
     return response.data;
   } catch (error) {
     console.error(
       "Failed to get session:",
-      error.response?.data || error.message || error
+      error.response?.data || error.message || error,
     );
     return null;
   }
 };
+
+export async function isAdmin() {
+  const session = await fetchSession();
+  return session?.user?.role === "admin" && session;
+}

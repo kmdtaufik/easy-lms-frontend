@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 
 export function FileUploader({ onChange, value }) {
+  const fileUrl = `https://easy-lms.t3.storage.dev/${value}`;
   const [fileState, setFileState] = useState({
     error: false,
     file: "",
@@ -24,6 +25,7 @@ export function FileUploader({ onChange, value }) {
     isDeleting: false,
     fileType: "image",
     key: value,
+    objectURL: fileUrl,
   });
 
   //upload files

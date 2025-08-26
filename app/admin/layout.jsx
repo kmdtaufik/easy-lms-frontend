@@ -1,8 +1,13 @@
+"use client";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { SiteHeader } from "@/components/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { isAdmin } from "@/lib/user";
+import { useRouter } from "next/navigation";
 
 export default function AdminLayout({ children }) {
+  const router = useRouter();
+  if (!isAdmin()) return router.push("/");
   return (
     <SidebarProvider
       style={{

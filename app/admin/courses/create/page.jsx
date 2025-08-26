@@ -90,7 +90,7 @@ export default function CreateCoursePage() {
           `${process.env.NEXT_PUBLIC_API_URL}/api/product`,
           {
             method: "POST",
-            credentials: true,
+            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
