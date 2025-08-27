@@ -18,7 +18,7 @@ export default async function EditCoursePage({ params }) {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
   const body = await res.json();
   console.log(body.data);
@@ -29,8 +29,8 @@ export default async function EditCoursePage({ params }) {
         Edit Course:
         <span className="text-primary underline">{course.title}</span>
       </h1>
-      <Tabs defaultValue="basic-info" className={"w-full"}>
-        <TabsList className={"grid grid-cols-2 w-full"}>
+      <Tabs defaultValue="basic-info" className={"w-full md:w-[80%]"}>
+        <TabsList className={"grid grid-cols-2 w-full "}>
           <TabsTrigger value="basic-info">Basic Info</TabsTrigger>
           <TabsTrigger value="course-structure">Course Structure</TabsTrigger>
         </TabsList>

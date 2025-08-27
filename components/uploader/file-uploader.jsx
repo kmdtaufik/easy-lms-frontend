@@ -14,8 +14,17 @@ import {
 } from "./render-state";
 import { toast } from "sonner";
 
-export function FileUploader({ onChange, value }) {
+export function FileUploader({
+  onChange,
+  value,
+  accept = "image",
+  maxSize = 5 * 1024 * 1024,
+}) {
   const fileUrl = `https://easy-lms.t3.storage.dev/${value}`;
+  const isVideo = accept === "video";
+  const acceptTypes = isVideo ? { "video/*": [] } : { "image/*": [] };
+  const defaultMaxSize = isVideo ? 100 * 1024 * 1024 : maxSize; // 100MB for video, 5MB for image
+
   const [fileState, setFileState] = useState({
     error: false,
     file: "",
@@ -23,9 +32,9 @@ export function FileUploader({ onChange, value }) {
     uploading: false,
     progress: 0,
     isDeleting: false,
-    fileType: "image",
+    fileType: isVideo ? "video" : "image",
     key: value,
-    objectURL: fileUrl,
+    ...(value && { objectURL: fileUrl }),
   });
 
   //upload files
@@ -50,9 +59,9 @@ export function FileUploader({ onChange, value }) {
             fileName: file.name,
             contentType: file.type,
             size: file.size,
-            isImage: true,
+            isImage: !isVideo,
           }),
-        },
+        }
       );
 
       if (!presignedRes.ok) {
@@ -92,7 +101,9 @@ export function FileUploader({ onChange, value }) {
             }));
             //set value to field
             onChange?.(key);
-            toast.success("File uploaded successfully");
+            toast.success(
+              `${isVideo ? "Video" : "Image"} uploaded successfully`
+            );
             resolve();
           } else {
             reject(new Error("Upload failed"));
@@ -138,13 +149,13 @@ export function FileUploader({ onChange, value }) {
           error: false,
           id: uuidv4(),
           isDeleting: false,
-          fileType: "image",
+          fileType: isVideo ? "video" : "image",
         });
 
         uploadFile(file);
       }
     },
-    [fileState.objectURL],
+    [fileState.objectURL, isVideo]
   );
 
   async function handleRemoveFile() {
@@ -160,7 +171,7 @@ export function FileUploader({ onChange, value }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ key: fileState.key }),
-        },
+        }
       );
       if (!res.ok) {
         toast.error("Failed to delete file from server");
@@ -181,7 +192,7 @@ export function FileUploader({ onChange, value }) {
         uploading: false,
         progress: 0,
         isDeleting: false,
-        fileType: "image",
+        fileType: isVideo ? "video" : "image",
       });
     } catch (err) {
       toast.error("Failed to delete file. Something went wrong.");
@@ -190,18 +201,19 @@ export function FileUploader({ onChange, value }) {
     }
   }
 
-  //rejeted files
-
+  //rejected files
   function onDropRejected(rejectedFiles) {
     if (rejectedFiles.length) {
       const tooManyFiles = rejectedFiles.find(
-        (rejection) => rejection.errors[0].code === "too-many-files",
+        (rejection) => rejection.errors[0].code === "too-many-files"
       );
       const tooBigSize = rejectedFiles.find(
-        (rejection) => rejection.errors[0].code === "file-too-large",
+        (rejection) => rejection.errors[0].code === "file-too-large"
       );
       if (tooBigSize) {
-        toast.error("File is too large.");
+        toast.error(
+          `File is too large. Max size: ${defaultMaxSize / (1024 * 1024)}MB`
+        );
       }
       if (tooManyFiles) {
         toast.error("Too many files selected.");
@@ -209,7 +221,7 @@ export function FileUploader({ onChange, value }) {
     }
   }
 
-  //cnotent render
+  //content render
   function renderContent() {
     if (fileState.uploading) {
       return (
@@ -230,11 +242,13 @@ export function FileUploader({ onChange, value }) {
           previewUrl={fileState.objectURL}
           isDeleting={fileState.isDeleting}
           handleRemove={handleRemoveFile}
+          fileType={fileState.fileType}
         />
       );
     }
-    return <RenderEmptyState isDragActive={isDragActive}></RenderEmptyState>;
+    return <RenderEmptyState isDragActive={isDragActive} accept={accept} />;
   }
+
   //clean up object url
   useEffect(() => {
     return () => {
@@ -243,12 +257,13 @@ export function FileUploader({ onChange, value }) {
       }
     };
   }, [fileState.objectURL]);
+
   //drop zone
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": [] },
+    accept: acceptTypes,
     maxFiles: 1,
-    maxSize: 5 * 1024 * 1024, //5MB
+    maxSize: defaultMaxSize,
     multiple: false,
     onDropRejected: onDropRejected,
     disabled:
@@ -261,11 +276,11 @@ export function FileUploader({ onChange, value }) {
       className={cn(
         "relative border-2 border-dashed transition-colors duration-200 ease-in-out w-full h-64",
         isDragActive
-          ? "border-primary  bg-primary/10 border-solid"
-          : "border-border hover:border-primary",
+          ? "border-primary bg-primary/10 border-solid"
+          : "border-border hover:border-primary"
       )}
     >
-      <CardContent className="flex  items-center justify-center w-full h-full p-4">
+      <CardContent className="flex items-center justify-center w-full h-full p-4">
         <input {...getInputProps()} />
         {renderContent()}
       </CardContent>

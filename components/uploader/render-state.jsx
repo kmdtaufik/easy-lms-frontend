@@ -1,28 +1,32 @@
 import { CloudUploadIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { X, Upload, File, ImageIcon, FileText } from "lucide-react";
+import { X, Upload, File, ImageIcon, FileText, Video } from "lucide-react"; // Added Video icon
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Progress } from "../ui/progress";
+
 //Render Empty State
-export function RenderEmptyState({ isDragActive }) {
+export function RenderEmptyState({ isDragActive, accept }) {
+  // Added accept prop
+  const isVideo = accept === "video";
+
   return (
     <div className="text-center">
       <div className="flex items-center mx-auto justify-center size-12 rounded-full bg-muted mb-4">
         <CloudUploadIcon
           className={cn(
             "size-6 text-muted-foreground",
-            isDragActive && "text-primary",
+            isDragActive && "text-primary"
           )}
         />
       </div>
       <p className="text-base font-semibold text-foreground">
-        Drop your files here or{" "}
+        Drop your {isVideo ? "video" : "image"} files here or{" "}
         <span className="text-primary font-bold cursor-pointer">
           click to upload
         </span>
       </p>
-      <Button type="button">Select file(s)</Button>
+      <Button type="button">Select {isVideo ? "video" : "image"} file</Button>
     </div>
   );
 }
@@ -30,13 +34,13 @@ export function RenderEmptyState({ isDragActive }) {
 //Render Error State
 export function RenderErrorState() {
   return (
-    <div className=" text-center">
+    <div className="text-center">
       <div className="flex items-center mx-auto justify-center size-12 rounded-full bg-destructive/30 mb-4">
         <ImageIcon className={cn("size-6 text-destructive")} />
       </div>
-      <p className="text-base font-semibold ">Upload failed.</p>
+      <p className="text-base font-semibold">Upload failed.</p>
       <p className="text-xs mt-1 text-muted-foreground">
-        Something Went wrong.
+        Something went wrong.
       </p>
       <Button type="button" className="mt-4">
         Retry Uploading
@@ -45,16 +49,31 @@ export function RenderErrorState() {
   );
 }
 
-//Render upload state
-export function RenderUploadedState({ previewUrl, isDeleting, handleRemove }) {
+//Render upload state - FIXED: Added fileType prop and video preview support
+export function RenderUploadedState({
+  previewUrl,
+  isDeleting,
+  handleRemove,
+  fileType,
+}) {
+  const isVideo = fileType === "video";
+
   return (
-    <div>
-      <Image
-        src={previewUrl}
-        alt="uploaded file"
-        fill
-        className="object-contain p-2 "
-      />
+    <div className="relative w-full h-full">
+      {isVideo ? (
+        <video
+          src={previewUrl}
+          className="w-full h-full object-contain p-2"
+          controls
+        />
+      ) : (
+        <Image
+          src={previewUrl}
+          alt="uploaded file"
+          fill
+          className="object-contain p-2"
+        />
+      )}
       <Button
         type="button"
         variant={"destructive"}
