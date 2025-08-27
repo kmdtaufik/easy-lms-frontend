@@ -40,6 +40,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { NewChapterDialog } from "./NewChapterDialog";
 import NewLessonDialog from "./NewLessonDialog";
+import { DeleteDialog } from "@/components/dialog/DeleleDialog";
 
 // API utility functions
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -351,9 +352,17 @@ export function CourseStructure({ course }) {
                             {chapter.title}
                           </p>
                         </div>
-                        <Button variant={"outline"} size="icon">
-                          <Trash2 className="size-4" />
-                        </Button>
+                        <DeleteDialog
+                          type="chapter"
+                          id={chapter.id}
+                          title={chapter.title}
+                          onDelete={(deletedId, type) => {
+                            // Remove chapter from local state
+                            setChapters((prev) =>
+                              prev.filter((ch) => ch.id !== deletedId)
+                            );
+                          }}
+                        />
                       </div>
 
                       {/* Lessons */}
@@ -392,9 +401,23 @@ export function CourseStructure({ course }) {
                                       </Link>
                                     </div>
                                     {/*Delete Button */}
-                                    <Button variant={"outline"} size="icon">
-                                      <Trash2 className="size-4" />
-                                    </Button>
+                                    <DeleteDialog
+                                      type="lesson"
+                                      id={lesson.id}
+                                      title={lesson.title}
+                                      onDelete={(deletedId, type) => {
+                                        // Remove lesson from chapter's lessons array
+                                        setChapters((prev) =>
+                                          prev.map((ch) => ({
+                                            ...ch,
+                                            lessons: ch.lessons.filter(
+                                              (lesson) =>
+                                                lesson.id !== deletedId
+                                            ),
+                                          }))
+                                        );
+                                      }}
+                                    />
                                   </div>
                                 )}
                               </SortableItem>
