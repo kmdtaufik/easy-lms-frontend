@@ -2,7 +2,7 @@ import { Database, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 
-export default function EmptyState() {
+export default function EmptyState({ children }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
       <div className="relative mb-6">
@@ -19,14 +19,9 @@ export default function EmptyState() {
         No Data Found
       </h3>
       <p className="text-muted-foreground/80 max-w-md text-balance leading-relaxed text-sm">
-        We couldn't find any data to display at this time. Create new or try
-        refreshing the page.
+        We couldn't find any data to display at this time.
       </p>
-      <div>
-        <Link href={"/admin/courses/create"} className={buttonVariants({})}>
-          <PlusIcon className="size-4" /> Create Course
-        </Link>
-      </div>
+      {children}
     </div>
   );
 }
