@@ -1,3 +1,5 @@
+"use client";
+import { DeleteDialog } from "@/components/dialog/DeleleDialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -6,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Trash2 } from "lucide-react";
 import {
   ArrowRight,
   Eye,
@@ -42,9 +43,13 @@ export function AdminCourseCard({ course }) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href={`/courses/${course.id}/delete`}>
-                <Trash2 className="size-4 mr-2 text-red-600" /> Delete Course
-              </Link>
+              <DeleteDialog
+                type="course"
+                id={course.id}
+                onDelete={() => window.location.reload()}
+              >
+                Delete Course
+              </DeleteDialog>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

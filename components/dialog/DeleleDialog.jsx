@@ -15,7 +15,13 @@ import { toast } from "sonner";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export function DeleteDialog({ type, id, title, onDelete, disabled = false }) {
+export function DeleteDialog({
+  children,
+  type,
+  id,
+  onDelete,
+  disabled = false,
+}) {
   const [open, setOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -176,15 +182,18 @@ export function DeleteDialog({ type, id, title, onDelete, disabled = false }) {
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button
-          variant="outline"
-          size="icon"
+          variant={children ? "ghost" : "outline"}
+          size={!children ? "icon" : "default"}
           disabled={disabled || isDeleting}
           className="hover:bg-destructive hover:text-destructive-foreground"
         >
           {isDeleting ? (
             <Loader2 className="size-4 animate-spin" />
           ) : (
-            <Trash2 className="size-4" />
+            <>
+              <Trash2 className="size-4" />
+              {children}
+            </>
           )}
         </Button>
       </AlertDialogTrigger>
