@@ -41,6 +41,7 @@ import { toast } from "sonner";
 import { NewChapterDialog } from "./NewChapterDialog";
 import NewLessonDialog from "./NewLessonDialog";
 import { DeleteDialog } from "@/components/dialog/DeleleDialog";
+import { EditChapterDialog } from "../[id]/[chapterId]/[lessonId]/_components/EditChapterDialog";
 
 // API utility functions
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -97,8 +98,8 @@ export function CourseStructure({ course }) {
   const toggleChapterOpen = useCallback((chapterId) => {
     setChapters((prev) =>
       prev.map((ch) =>
-        ch.id === chapterId ? { ...ch, isOpen: !ch.isOpen } : ch
-      )
+        ch.id === chapterId ? { ...ch, isOpen: !ch.isOpen } : ch,
+      ),
     );
   }, []);
 
@@ -130,7 +131,7 @@ export function CourseStructure({ course }) {
         className={cn(
           "touch-none",
           className,
-          isDragging ? "z-50 rotate-3 shadow-lg" : ""
+          isDragging ? "z-50 rotate-3 shadow-lg" : "",
         )}
       >
         {children(listeners)}
@@ -147,7 +148,7 @@ export function CourseStructure({ course }) {
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   // Save changes function
@@ -203,11 +204,11 @@ export function CourseStructure({ course }) {
       else if (activeType === "lesson") {
         // Find the chapter containing the active lesson
         const activeChapterIndex = chapters.findIndex((ch) =>
-          ch.lessons.some((lesson) => lesson.id === activeId)
+          ch.lessons.some((lesson) => lesson.id === activeId),
         );
         const activeChapter = chapters[activeChapterIndex];
         const activeLessonIndex = activeChapter.lessons.findIndex(
-          (lesson) => lesson.id === activeId
+          (lesson) => lesson.id === activeId,
         );
         const activeLesson = activeChapter.lessons[activeLessonIndex];
 
@@ -215,7 +216,7 @@ export function CourseStructure({ course }) {
         let targetChapterIndex, targetChapter;
         if (overType === "lesson") {
           targetChapterIndex = chapters.findIndex((ch) =>
-            ch.lessons.some((lesson) => lesson.id === overId)
+            ch.lessons.some((lesson) => lesson.id === overId),
           );
         } else if (overType === "chapter") {
           targetChapterIndex = chapters.findIndex((ch) => ch.id === overId);
@@ -229,12 +230,12 @@ export function CourseStructure({ course }) {
           overType === "lesson"
         ) {
           const targetLessonIndex = targetChapter.lessons.findIndex(
-            (lesson) => lesson.id === overId
+            (lesson) => lesson.id === overId,
           );
           const reorderedLessons = arrayMove(
             targetChapter.lessons,
             activeLessonIndex,
-            targetLessonIndex
+            targetLessonIndex,
           );
 
           const updatedChapters = [...chapters];
@@ -251,14 +252,14 @@ export function CourseStructure({ course }) {
         else if (activeChapterIndex !== targetChapterIndex) {
           // Remove from source chapter
           const updatedSourceLessons = activeChapter.lessons.filter(
-            (lesson) => lesson.id !== activeId
+            (lesson) => lesson.id !== activeId,
           );
 
           // Add to target chapter
           let newPosition = targetChapter.lessons.length;
           if (overType === "lesson") {
             const targetLessonIndex = targetChapter.lessons.findIndex(
-              (lesson) => lesson.id === overId
+              (lesson) => lesson.id === overId,
             );
             newPosition = targetLessonIndex;
           }
@@ -351,15 +352,31 @@ export function CourseStructure({ course }) {
                           <p className="cursor-pointer hover:text-primary pl-2 font-medium">
                             {chapter.title}
                           </p>
+                          {/* Edit Chapter Button */}
+                          <EditChapterDialog
+                            chapter={chapter}
+                            onChapterUpdated={(updatedChapter) => {
+                              // Update the chapter title in local state
+                              setChapters((prev) =>
+                                prev.map((ch) =>
+                                  ch.id === chapter.id
+                                    ? {
+                                        ...ch,
+                                        title: updatedChapter.data.title,
+                                      }
+                                    : ch,
+                                ),
+                              );
+                            }}
+                          />
                         </div>
                         <DeleteDialog
                           type="chapter"
                           id={chapter.id}
-                          title={chapter.title}
                           onDelete={(deletedId, type) => {
                             // Remove chapter from local state
                             setChapters((prev) =>
-                              prev.filter((ch) => ch.id !== deletedId)
+                              prev.filter((ch) => ch.id !== deletedId),
                             );
                           }}
                         />
@@ -404,7 +421,6 @@ export function CourseStructure({ course }) {
                                     <DeleteDialog
                                       type="lesson"
                                       id={lesson.id}
-                                      title={lesson.title}
                                       onDelete={(deletedId, type) => {
                                         // Remove lesson from chapter's lessons array
                                         setChapters((prev) =>
@@ -412,9 +428,9 @@ export function CourseStructure({ course }) {
                                             ...ch,
                                             lessons: ch.lessons.filter(
                                               (lesson) =>
-                                                lesson.id !== deletedId
+                                                lesson.id !== deletedId,
                                             ),
-                                          }))
+                                          })),
                                         );
                                       }}
                                     />
