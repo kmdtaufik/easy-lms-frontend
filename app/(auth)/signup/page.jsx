@@ -100,7 +100,9 @@ export default function SignupPage() {
               <Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing...
             </>
           ) : (
-            "Continue with Google"
+            <>
+              <IconBrandGoogle className="size-4" /> "Continue with Google"
+            </>
           )}
         </Button>
         <div className="relative text-center text-xs text-muted-foreground">

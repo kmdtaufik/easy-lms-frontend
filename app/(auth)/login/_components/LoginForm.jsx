@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Loader, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { IconBrandGoogle } from "@tabler/icons-react";
 
 export default function LoginForm() {
   const [isPending, startTransition] = useTransition();
@@ -102,7 +103,9 @@ export default function LoginForm() {
               Processing...
             </>
           ) : (
-            "Continue with Google"
+            <>
+              <IconBrandGoogle className="size-4" /> "Continue with Google"
+            </>
           )}
         </Button>
 
@@ -160,15 +163,15 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <div className="relative text-center text-xs text-muted-foreground">
+        {/* <div className="relative text-center text-xs text-muted-foreground">
           <span className="bg-card px-2 relative z-10">or use email OTP</span>
           <div className="absolute inset-0 flex items-center -z-0">
             <div className="w-full border-t" />
           </div>
-        </div>
+        </div> */}
 
         {/* Email OTP */}
-        <div className="grid gap-2">
+        {/* <div className="grid gap-2">
           <Label htmlFor="otp-email">Email (OTP)</Label>
           <Input
             id="otp-email"
@@ -186,7 +189,7 @@ export default function LoginForm() {
             ) : null}
             Continue with Email OTP
           </Button>
-        </div>
+        </div> */}
 
         <p className="text-xs text-muted-foreground text-center">
           Need an account?{" "}
