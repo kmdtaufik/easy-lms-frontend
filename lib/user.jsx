@@ -3,7 +3,7 @@ import axios from "axios";
 export const fetchSession = async () => {
   try {
     const response = await axios.get(
-      "https://easy-lms-backend.vercel.app/api/me",
+      "https://easy-lms-backend.onrender.com/api/me",
       {
         withCredentials: true, // important to send cookies
       },
