@@ -1,6 +1,6 @@
 import RenderDescription from "@/components/Editor/RenderDescription";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Collapsible,
@@ -17,6 +17,7 @@ import { IconChartBar } from "@tabler/icons-react";
 import { CheckIcon } from "lucide-react";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { toast } from "sonner";
 
 export default async function PublicCourseSlugPage({ params }) {
@@ -31,7 +32,7 @@ export default async function PublicCourseSlugPage({ params }) {
       },
       // Add cache for better performance on public pages
       //   next: { revalidate: 3600 }, // Revalidate every hour
-    },
+    }
   );
   if (!res.ok) {
     //toast.error("Failed to fetch course details");
@@ -94,7 +95,7 @@ export default async function PublicCourseSlugPage({ params }) {
               {course.chapters.length || 0} chapters |{" "}
               {course.chapters.reduce(
                 (total, chapter) => total + chapter.lessons.length,
-                0,
+                0
               ) || 0}{" "}
               Lessons
             </div>
@@ -230,7 +231,7 @@ export default async function PublicCourseSlugPage({ params }) {
                       <p className="text-sm text-muted-foreground">
                         {course.chapters.reduce(
                           (total, chapter) => total + chapter.lessons.length,
-                          0,
+                          0
                         ) || 0}{" "}
                         Lessons
                       </p>
@@ -261,7 +262,12 @@ export default async function PublicCourseSlugPage({ params }) {
                   </li>
                 </ul>
               </div>
-              <Button className={"w-full"}>Enroll Now!!</Button>
+              <Link
+                href={`/courses/${params.slug}/enroll`}
+                className={buttonVariants({ className: "w-full" })}
+              >
+                Enroll Now!!
+              </Link>
               <p className="mt-3 text-center text-xs text-muted-foreground">
                 30-day money back guarantee
               </p>

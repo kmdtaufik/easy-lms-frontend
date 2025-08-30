@@ -46,6 +46,7 @@ export default function Navbar() {
                 email={session?.user?.email}
                 name={session?.user?.name || session?.user?.email || "User"}
                 image={session?.user?.image || ""}
+                role={session?.user?.role || "user"}
               />
             ) : (
               <>

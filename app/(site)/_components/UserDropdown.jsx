@@ -17,8 +17,9 @@ import Link from "next/link";
 import { LayoutDashboardIcon } from "lucide-react";
 import { useSignOut } from "@/hooks/use-userServices";
 
-export function UserDropdown({ email, name, image }) {
+export function UserDropdown({ email, name, image, role }) {
   //logout function
+  const isAdmin = role === "admin";
   const signOut = useSignOut();
   return (
     <DropdownMenu>
@@ -65,7 +66,7 @@ export function UserDropdown({ email, name, image }) {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/admin">
+            <Link href={isAdmin ? "/admin" : "/dashboard"}>
               <LayoutDashboardIcon
                 size={16}
                 className="opacity-60"
