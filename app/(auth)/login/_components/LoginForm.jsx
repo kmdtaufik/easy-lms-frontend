@@ -34,7 +34,7 @@ export default function LoginForm() {
     startTransition(async () => {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: "https://easy-lms-frontend.vercel.app",
         fetchOptions: {
           onSuccess: () => toast.success("Login successful"),
           onError: () => toast.error("Google login failed"),
