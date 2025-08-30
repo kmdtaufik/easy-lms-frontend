@@ -305,12 +305,12 @@ export default function LessonPage({ params }) {
             <p className="text-muted-foreground mb-6">
               {error || "The lesson you're looking for doesn't exist."}
             </p>
-            <Link href={`/dashboard/${slug}`}>
+            {/* <Link href={`/dashboard/${slug}`}>
               <Button>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Course
               </Button>
-            </Link>
+            </Link> */}
           </CardContent>
         </Card>
       </div>
@@ -326,12 +326,12 @@ export default function LessonPage({ params }) {
       <div className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <Link href={`/dashboard/${slug}`}>
+            {/* <Link href={`/dashboard/${slug}`}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Course
               </Button>
-            </Link>
+            </Link> */}
             <div className="flex-1">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                 {course?.title && (
