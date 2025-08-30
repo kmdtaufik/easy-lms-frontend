@@ -69,7 +69,7 @@ export default function SignupPage() {
     startTransition(async () => {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: "https://easy-lms-frontend.vercel.app",
         fetchOptions: {
           onSuccess: () => toast.success("Signed up"),
           onError: () => toast.error("Google sign up failed"),
