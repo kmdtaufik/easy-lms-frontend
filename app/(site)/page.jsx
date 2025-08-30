@@ -24,9 +24,7 @@ async function getLatestCourses() {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/product?limit=6`,
-      {
-        cache: "no-store", // Always fetch fresh data for homepage
-      }
+      {}
     );
 
     if (!res.ok) {
