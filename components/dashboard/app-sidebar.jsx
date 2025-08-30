@@ -50,12 +50,12 @@ const data = {
     },
     {
       title: "Analytics",
-      url: "#",
+      url: "/admin/analytics",
       icon: IconChartBar,
     },
     {
-      title: "Team",
-      url: "#",
+      title: "Users",
+      url: "/admin/users",
       icon: IconUsers,
     },
   ],
