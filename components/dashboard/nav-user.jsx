@@ -46,6 +46,8 @@ export function NavUser() {
     return parts[0][0].toUpperCase() + parts[parts.length - 1][0].toUpperCase();
   }
 
+  const isAdmin = session?.user?.role === "admin";
+
   //Signout
   const signOut = useSignOut();
   return (
@@ -61,7 +63,9 @@ export function NavUser() {
                 <AvatarImage
                   src={
                     session?.user?.image ??
-                    `https://avatar.vercel.sh/${getInitials(session?.user?.name)}.svg?text=${getInitials(session?.user?.name)}`
+                    `https://avatar.vercel.sh/${getInitials(
+                      session?.user?.name
+                    )}.svg?text=${getInitials(session?.user?.name)}`
                   }
                   alt={session?.user?.name}
                 />
@@ -92,7 +96,9 @@ export function NavUser() {
                   <AvatarImage
                     src={
                       session?.user?.image ??
-                      `https://avatar.vercel.sh/${getInitials(session?.user?.name)}.svg?text=${getInitials(session?.user?.name)}`
+                      `https://avatar.vercel.sh/${getInitials(
+                        session?.user?.name
+                      )}.svg?text=${getInitials(session?.user?.name)}`
                     }
                     alt={session?.user?.name}
                   />
@@ -119,13 +125,13 @@ export function NavUser() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/admin">
+                <Link href={isAdmin ? "/admin" : "/dashboard"}>
                   <IconDashboard /> Dashboard
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/admin/courses">
-                  <Tv2 /> Courses
+                <Link href={isAdmin ? "/admin/courses" : "/dashboard/profile"}>
+                  <Tv2 /> {isAdmin ? "Courses" : "Profile"}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
