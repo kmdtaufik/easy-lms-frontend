@@ -452,7 +452,7 @@ export default function LessonPage({ params }) {
                       className="flex items-center gap-2"
                     >
                       <CheckCircle2 className="h-4 w-4" />
-                      {markingProgress ? "Updating..." : "Mark Incomplete"}
+                      {markingProgress ? "Updating..." : " Completed"}
                     </Button>
                   ) : (
                     <Button
