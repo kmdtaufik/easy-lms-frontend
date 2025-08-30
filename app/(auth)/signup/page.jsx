@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { IconBrandGoogle } from "@tabler/icons-react";
 
 export default function SignupPage() {
   const router = useRouter();
