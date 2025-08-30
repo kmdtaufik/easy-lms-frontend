@@ -43,8 +43,7 @@ export default async function PublicCoursePage({ searchParams }) {
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "no-store", // Disable cache for search results
-    },
+    }
   );
 
   if (!res.ok) {
