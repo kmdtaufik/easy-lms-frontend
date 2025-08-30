@@ -300,7 +300,7 @@ export default function DashboardPage() {
                   <CardContent className="p-0">
                     {/* Course Image */}
                     <div className="aspect-video relative overflow-hidden rounded-t-lg">
-                      {enrollment?.course?.fileKey ? (
+                      {enrollment.course.fileKey ? (
                         <Image
                           src={`https://easy-lms.t3.storage.dev/${enrollment.course.fileKey}`}
                           alt={enrollment.course.title}
