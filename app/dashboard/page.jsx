@@ -68,7 +68,7 @@ export default function DashboardPage() {
         `${API_BASE_URL}/api/enrollment/user/${userId}`,
         {
           credentials: "include",
-        },
+        }
       );
 
       if (response.ok) {
@@ -101,7 +101,7 @@ export default function DashboardPage() {
         `${API_BASE_URL}/api/lesson/progress/user/all`,
         {
           credentials: "include",
-        },
+        }
       );
 
       if (!response.ok) {
@@ -207,7 +207,7 @@ export default function DashboardPage() {
                   <p className="text-2xl font-bold">
                     {userProgress.reduce(
                       (sum, item) => sum + item.progress.completedLessons,
-                      0,
+                      0
                     )}
                   </p>
                   <p className="text-sm text-muted-foreground">
@@ -226,7 +226,7 @@ export default function DashboardPage() {
                   <p className="text-2xl font-bold">
                     {
                       enrolledCourses.filter(
-                        (course) => course.status === "active",
+                        (course) => course.status === "active"
                       ).length
                     }
                   </p>
@@ -243,7 +243,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">My Courses</h2>
           {enrolledCourses.length > 0 && (
-            <Link href="/dashboard/courses">
+            <Link href="/dashboard">
               <Button variant="outline" size="sm">
                 View All <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
@@ -300,7 +300,7 @@ export default function DashboardPage() {
                   <CardContent className="p-0">
                     {/* Course Image */}
                     <div className="aspect-video relative overflow-hidden rounded-t-lg">
-                      {enrollment.course.fileKey ? (
+                      {enrollment?.course?.fileKey ? (
                         <Image
                           src={`https://easy-lms.t3.storage.dev/${enrollment.course.fileKey}`}
                           alt={enrollment.course.title}
@@ -317,7 +317,7 @@ export default function DashboardPage() {
                       <div className="absolute top-3 right-3">
                         <Badge
                           className={`${getStatusColor(
-                            enrollment.status,
+                            enrollment.status
                           )} flex items-center gap-1`}
                         >
                           {getStatusIcon(enrollment.status)}
@@ -355,7 +355,7 @@ export default function DashboardPage() {
                             <span>
                               Last activity:{" "}
                               {new Date(
-                                progress.lastActivity,
+                                progress.lastActivity
                               ).toLocaleDateString()}
                             </span>
                           )}
@@ -373,7 +373,7 @@ export default function DashboardPage() {
                             <span>
                               Completed{" "}
                               {new Date(
-                                enrollment.completedAt,
+                                enrollment.completedAt
                               ).toLocaleDateString()}
                             </span>
                           )}
@@ -381,7 +381,9 @@ export default function DashboardPage() {
 
                       {/* Action Button */}
                       <Link
-                        href={`/dashboard/${enrollment.course.slug || enrollment.course._id}`}
+                        href={`/dashboard/${
+                          enrollment.course.slug || enrollment.course._id
+                        }`}
                       >
                         <Button
                           className="w-full"
@@ -437,7 +439,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {latestCourses.map((course) => {
               const isEnrolled = enrolledCourses.some(
-                (enrollment) => enrollment.course._id === course._id,
+                (enrollment) => enrollment.course._id === course._id
               );
 
               return (

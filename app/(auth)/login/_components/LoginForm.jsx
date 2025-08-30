@@ -104,7 +104,7 @@ export default function LoginForm() {
             </>
           ) : (
             <>
-              <IconBrandGoogle className="size-4" /> "Continue with Google"
+              <IconBrandGoogle className="size-4" /> Continue with Google
             </>
           )}
         </Button>
