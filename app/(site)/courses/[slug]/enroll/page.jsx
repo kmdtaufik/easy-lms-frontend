@@ -116,6 +116,7 @@ export default function EnrollPage({ params }) {
         setIsEnrolled(data.isEnrolled);
 
         if (data.isEnrolled) {
+          toast.info("You are already enrolled in this course.");
           router.push(`/dashboard/${slug}`);
         }
       }
