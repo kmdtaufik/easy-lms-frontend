@@ -19,7 +19,8 @@ import { toast } from "sonner";
 import Link from "next/link";
 import Image from "next/image";
 import { authClient } from "@/lib/auth";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function EnrollPage({ params }) {
   const router = useRouter();
@@ -29,6 +30,7 @@ export default function EnrollPage({ params }) {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [enrollmentSuccess, setEnrollmentSuccess] = useState(false);
   const [slug, setSlug] = useState(null);
+  const [session, setSession] = useState(null);
 
   // Payment form state
   const [paymentData, setPaymentData] = useState({
@@ -42,22 +44,42 @@ export default function EnrollPage({ params }) {
   // Extract slug from params
   useEffect(() => {
     const getSlug = async () => {
-      const resolvedParams = await params;
-      setSlug(resolvedParams.slug);
+      try {
+        const resolvedParams = await params;
+        setSlug(resolvedParams.slug);
+      } catch (error) {
+        console.error("Error resolving params:", error);
+      }
     };
     getSlug();
   }, [params]);
 
+  // Get auth session
+  useEffect(() => {
+    const getSession = async () => {
+      try {
+        const sessionData = await authClient.getSession();
+        setSession(sessionData);
+      } catch (error) {
+        console.error("Error getting session:", error);
+      }
+    };
+    getSession();
+  }, []);
+
+  // Fetch course when slug is available
   useEffect(() => {
     if (slug) {
       fetchCourse();
     }
   }, [slug]);
 
-  //get better auth session
-  useEffect(async () => {
-    const session = await authClient.getSession();
-  }, []);
+  // Check enrollment when both session and course are available
+  useEffect(() => {
+    if (session && course?._id) {
+      checkEnrollment(course._id);
+    }
+  }, [session, course, slug]);
 
   const fetchCourse = async () => {
     try {
@@ -71,11 +93,6 @@ export default function EnrollPage({ params }) {
 
       const data = await response.json();
       setCourse(data.data);
-
-      // After getting course, check enrollment
-      if (session && data.data?._id) {
-        checkEnrollment(data.data._id);
-      }
     } catch (error) {
       console.error("Error fetching course:", error);
       toast.error("Failed to load course details");
@@ -177,18 +194,20 @@ export default function EnrollPage({ params }) {
     e.preventDefault();
 
     if (!validateForm()) return;
+
     if (!session) {
       toast.error("Please login to Enroll in the course.");
       router.push("/login");
       return;
     }
+
     setProcessing(true);
 
     try {
       // Simulate payment processing delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Now enroll the user - Fixed: use courseId instead of course._id
+      // Now enroll the user
       const enrollResponse = await fetch(`${API_BASE_URL}/api/enrollment`, {
         method: "POST",
         headers: {
@@ -196,7 +215,7 @@ export default function EnrollPage({ params }) {
         },
         credentials: "include",
         body: JSON.stringify({
-          courseId: course._id, // This matches the controller expectation
+          courseId: course._id,
         }),
       });
 
@@ -212,7 +231,7 @@ export default function EnrollPage({ params }) {
       setEnrollmentSuccess(true);
       toast.success("Successfully enrolled in course!");
 
-      // Redirect after a short delay - Fixed: use slug instead of params.slug
+      // Redirect after a short delay
       setTimeout(() => {
         router.push(`/courses/${slug}`);
       }, 2000);
