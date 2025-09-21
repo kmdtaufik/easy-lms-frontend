@@ -55,13 +55,6 @@ export default function EnrollPage({ params }) {
   }, [slug]);
 
   const fetchCourse = async () => {
-    const session = await authClient.getSession();
-    if (!session) {
-      toast.error("Please login to Enroll in the course.");
-      router.push("/login");
-      return;
-    }
-
     try {
       const response = await fetch(`${API_BASE_URL}/api/product/slug/${slug}`, {
         credentials: "include",
@@ -179,7 +172,12 @@ export default function EnrollPage({ params }) {
     e.preventDefault();
 
     if (!validateForm()) return;
-
+    const session = await authClient.getSession();
+    if (!session) {
+      toast.error("Please login to Enroll in the course.");
+      router.push("/login");
+      return;
+    }
     setProcessing(true);
 
     try {
