@@ -19,6 +19,7 @@ import { IconBrandGoogle } from "@tabler/icons-react";
 
 export default function LoginForm() {
   const [isPending, startTransition] = useTransition();
+  const [isGooglePending, startGoogleTransition] = useTransition();
   const [email, setEmail] = useState("");
   const [pwEmail, setPwEmail] = useState("");
   const [pwPassword, setPwPassword] = useState("");
@@ -32,7 +33,7 @@ export default function LoginForm() {
 
   const callback = process.env.CLIENT_URL;
   async function signInWithGoogle() {
-    startTransition(async () => {
+    startGoogleTransition(async () => {
       await authClient.signIn.social({
         provider: "google",
         callbackURL: "https://easy-lms-frontend.vercel.app",
@@ -97,7 +98,7 @@ export default function LoginForm() {
           className="w-full"
           onClick={signInWithGoogle}
         >
-          {isPending ? (
+          {isGooglePending ? (
             <>
               <Loader className="h-4 w-4 animate-spin mr-2" />
               Processing...
