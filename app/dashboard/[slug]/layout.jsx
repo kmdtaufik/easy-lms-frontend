@@ -1,6 +1,6 @@
+import { authClient } from "@/lib/auth";
 import { EnrolledCourseSidebar } from "../_components/EnrolledCourseSidebar";
 import { cookies } from "next/headers";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export default async function EnrolledCoursePageLayout({ children, params }) {
   const { slug } = await params;
@@ -34,11 +34,9 @@ export default async function EnrolledCoursePageLayout({ children, params }) {
   return (
     <div className="flex flex-1">
       {/* sidebar 30% */}
-      {!useIsMobile() && (
-        <div className="w-80 border-r border-border shrink-0">
-          <EnrolledCourseSidebar course={course} />
-        </div>
-      )}
+      <div className="hidden md:block w-80 border-r border-border shrink-0">
+        <EnrolledCourseSidebar course={course} />
+      </div>
       {/* main content 70% */}
       <div className="flex-1 overflow-hidden">{children}</div>
     </div>

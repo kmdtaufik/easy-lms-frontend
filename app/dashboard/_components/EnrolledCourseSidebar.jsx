@@ -11,7 +11,6 @@ import { Progress } from "@/components/ui/progress";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { PlayIcon } from "lucide-react";
 import { LessonItem } from "./LessonItem";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -148,7 +147,7 @@ export function EnrolledCourseSidebar({ course }) {
     completedLessons: 0,
     completionPercentage: 0,
   };
-  if (useIsMobile()) return null;
+
   return (
     <div className="flex flex-col h-full">
       {/* Course Header */}
