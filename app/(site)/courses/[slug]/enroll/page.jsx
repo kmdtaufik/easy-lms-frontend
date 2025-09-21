@@ -237,7 +237,7 @@ export default function EnrollPage({ params }) {
       }, 2000);
     } catch (error) {
       console.error("Enrollment error:", error);
-      toast.error(error.message || "Failed to complete enrollment");
+      toast.error("Login to Enroll in the course.");
     } finally {
       setProcessing(false);
     }
