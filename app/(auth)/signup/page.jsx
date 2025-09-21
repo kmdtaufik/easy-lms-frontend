@@ -22,6 +22,7 @@ export default function SignupPage() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const [isPending, startTransition] = useTransition();
+  const [isGooglePending, startGoogleTransition] = useTransition();
   const callback = process.env.CLIENT_URL;
 
   const [form, setForm] = useState({
@@ -67,7 +68,7 @@ export default function SignupPage() {
   };
 
   const handleGoogle = () => {
-    startTransition(async () => {
+    startGoogleTransition(async () => {
       await authClient.signIn.social({
         provider: "google",
         callbackURL: "https://easy-lms-frontend.vercel.app",
@@ -92,11 +93,11 @@ export default function SignupPage() {
       <CardContent className="flex flex-col gap-4">
         <Button
           variant="outline"
-          disabled={isPending}
+          disabled={isGooglePending}
           onClick={handleGoogle}
           className="w-full"
         >
-          {isPending ? (
+          {isGooglePending ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing...
             </>
@@ -139,7 +140,7 @@ export default function SignupPage() {
             />
           </div>
           <div>
-            <Label htmlFor="password">Password (min 6 chars)</Label>
+            <Label htmlFor="password">Password (min 8 chars)</Label>
             <Input
               id="password"
               name="password"
