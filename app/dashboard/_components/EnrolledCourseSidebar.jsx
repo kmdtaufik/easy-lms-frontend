@@ -18,7 +18,7 @@ export function EnrolledCourseSidebar({ course }) {
   const [courseProgress, setCourseProgress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [openChapters, setOpenChapters] = useState(
-    new Set([course.chapters[0]?._id])
+    new Set([course.chapters[0]?._id]),
   );
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function EnrolledCourseSidebar({ course }) {
         `${API_BASE_URL}/api/lesson/progress/course/${course._id}`,
         {
           credentials: "include",
-        }
+        },
       );
 
       if (response.ok) {
@@ -58,7 +58,7 @@ export function EnrolledCourseSidebar({ course }) {
           stats: {
             totalLessons: course.chapters.reduce(
               (sum, ch) => sum + ch.lessons.length,
-              0
+              0,
             ),
             completedLessons: 0,
             completionPercentage: 0,
@@ -84,7 +84,7 @@ export function EnrolledCourseSidebar({ course }) {
         stats: {
           totalLessons: course.chapters.reduce(
             (sum, ch) => sum + ch.lessons.length,
-            0
+            0,
           ),
           completedLessons: 0,
           completionPercentage: 0,
@@ -111,7 +111,7 @@ export function EnrolledCourseSidebar({ course }) {
     if (!courseProgress) return { completed: 0, total: 0, percentage: 0 };
 
     const chapterData = courseProgress.chapters.find(
-      (ch) => ch.chapter._id === chapterId
+      (ch) => ch.chapter._id === chapterId,
     );
     if (!chapterData) return { completed: 0, total: 0, percentage: 0 };
 
@@ -127,7 +127,7 @@ export function EnrolledCourseSidebar({ course }) {
 
     for (const chapterData of courseProgress.chapters) {
       const lessonData = chapterData.lessons.find(
-        (l) => l.lesson._id === lessonId
+        (l) => l.lesson._id === lessonId,
       );
       if (lessonData) {
         return lessonData.progress;
@@ -136,7 +136,7 @@ export function EnrolledCourseSidebar({ course }) {
 
     // Fallback to localStorage for immediate feedback
     const completedLessons = JSON.parse(
-      localStorage.getItem("completedLessons") || "{}"
+      localStorage.getItem("completedLessons") || "{}",
     );
     return { completed: !!completedLessons[lessonId] };
   };
@@ -149,7 +149,7 @@ export function EnrolledCourseSidebar({ course }) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="hidden md:flex flex-col h-full">
       {/* Course Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center gap-3 mb-3">
