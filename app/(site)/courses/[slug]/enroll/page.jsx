@@ -18,7 +18,7 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import Image from "next/image";
-
+import { authClient } from "@/lib/auth";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function EnrollPage({ params }) {
