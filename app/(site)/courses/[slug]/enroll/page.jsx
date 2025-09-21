@@ -54,6 +54,11 @@ export default function EnrollPage({ params }) {
     }
   }, [slug]);
 
+  //get better auth session
+  useEffect(async () => {
+    const session = await authClient.getSession();
+  }, []);
+
   const fetchCourse = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/product/slug/${slug}`, {
@@ -68,7 +73,7 @@ export default function EnrollPage({ params }) {
       setCourse(data.data);
 
       // After getting course, check enrollment
-      if (data.data?._id) {
+      if (session && data.data?._id) {
         checkEnrollment(data.data._id);
       }
     } catch (error) {
@@ -172,7 +177,6 @@ export default function EnrollPage({ params }) {
     e.preventDefault();
 
     if (!validateForm()) return;
-    const session = await authClient.getSession();
     if (!session) {
       toast.error("Please login to Enroll in the course.");
       router.push("/login");
@@ -183,9 +187,6 @@ export default function EnrollPage({ params }) {
     try {
       // Simulate payment processing delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Demo payment always succeeds
-      toast.success("Payment processed successfully!");
 
       // Now enroll the user - Fixed: use courseId instead of course._id
       const enrollResponse = await fetch(`${API_BASE_URL}/api/enrollment`, {
@@ -206,6 +207,8 @@ export default function EnrollPage({ params }) {
 
       const enrollData = await enrollResponse.json();
 
+      // Demo payment always succeeds
+      toast.success("Payment processed successfully!");
       setEnrollmentSuccess(true);
       toast.success("Successfully enrolled in course!");
 
