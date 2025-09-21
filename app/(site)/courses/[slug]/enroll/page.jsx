@@ -116,7 +116,7 @@ export default function EnrollPage({ params }) {
         setIsEnrolled(data.isEnrolled);
 
         if (data.isEnrolled) {
-          router.push(`/courses/${slug}`);
+          router.push(`/dashboard/${slug}`);
         }
       }
     } catch (error) {
