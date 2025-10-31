@@ -138,17 +138,20 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     fetchAnalyticsData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     fetchChapters(selectedCourse);
     setSelectedChapter(""); // Reset chapter selection when course changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCourse]);
 
   useEffect(() => {
     if (selectedCourse || selectedChapter) {
       refreshLessonAnalytics();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCourse, selectedChapter]);
 
   // Loading skeleton
