@@ -47,6 +47,7 @@ export default function CourseDashboardPage({ params }) {
     if (slug) {
       fetchCourseData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   const fetchCourseData = async () => {

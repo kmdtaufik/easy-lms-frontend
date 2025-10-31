@@ -18,8 +18,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { memo } from "react";
 
-export function AdminCourseCard({ course }) {
+export const AdminCourseCard = memo(function AdminCourseCard({ course }) {
   const base = "https://easy-lms.t3.storage.dev/";
   return (
     <Card className={"group relative py-0 gap-0"}>
@@ -60,6 +61,8 @@ export function AdminCourseCard({ course }) {
         width={600}
         height={400}
         className={"w-full rounded-t-lg aspect-video h-full object-cover"}
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
       <CardContent className={"p-4"}>
         <Link
@@ -92,4 +95,4 @@ export function AdminCourseCard({ course }) {
       </CardContent>
     </Card>
   );
-}
+});
