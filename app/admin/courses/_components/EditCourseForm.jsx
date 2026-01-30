@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PlusIcon } from "lucide-react";
-import { RichTextEditor } from "@/components/Editor/RichTextEditor";
+import RichTextEditor from "@/components/Editor/RichTextEditorDynamic";
 import { FileUploader } from "@/components/uploader/file-uploader";
 import { useState } from "react";
 import { toast } from "sonner";

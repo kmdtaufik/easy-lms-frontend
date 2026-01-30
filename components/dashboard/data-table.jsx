@@ -340,6 +340,18 @@ export function DataTable({
 
   const dataIds = React.useMemo(() => data?.map(({ id }) => id) || [], [data])
 
+  // Memoize handleDragEnd to prevent recreation on every render
+  const handleDragEnd = React.useCallback((event) => {
+    const { active, over } = event
+    if (active && over && active.id !== over.id) {
+      setData((data) => {
+        const oldIndex = dataIds.indexOf(active.id)
+        const newIndex = dataIds.indexOf(over.id)
+        return arrayMove(data, oldIndex, newIndex);
+      })
+    }
+  }, [dataIds])
+
   const table = useReactTable({
     data,
     columns,
@@ -364,17 +376,6 @@ export function DataTable({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
-
-  function handleDragEnd(event) {
-    const { active, over } = event
-    if (active && over && active.id !== over.id) {
-      setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex);
-      })
-    }
-  }
 
   return (
     <Tabs defaultValue="outline" className="w-full flex-col justify-start gap-6">

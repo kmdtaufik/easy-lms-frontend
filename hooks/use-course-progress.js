@@ -35,6 +35,7 @@ export function useCourseProgress(courseId) {
 
   useEffect(() => {
     fetchCourseProgress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId]);
 
   return {

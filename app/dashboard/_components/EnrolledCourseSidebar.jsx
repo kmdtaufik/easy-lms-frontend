@@ -25,6 +25,7 @@ export function EnrolledCourseSidebar({ course }) {
     if (course?._id) {
       fetchCourseProgress();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [course._id]);
 
   const fetchCourseProgress = async () => {

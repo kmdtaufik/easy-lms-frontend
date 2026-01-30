@@ -3,8 +3,9 @@ import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { PlayIcon } from "lucide-react";
 import Link from "next/link";
+import { memo } from "react";
 
-export function LessonItem({ slug, lesson }) {
+export const LessonItem = memo(function LessonItem({ slug, lesson }) {
   return (
     <Link
       href={"/dashboard/" + slug + "/" + lesson._id}
@@ -51,4 +52,4 @@ export function LessonItem({ slug, lesson }) {
       </div>
     </Link>
   );
-}
+});

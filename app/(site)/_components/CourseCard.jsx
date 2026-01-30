@@ -7,8 +7,9 @@ import { School } from "lucide-react";
 import { TimerIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { memo } from "react";
 
-export function PublicCourseCard({ course }) {
+export const PublicCourseCard = memo(function PublicCourseCard({ course }) {
   return (
     <Card className={"group relative py-0 gap-0"}>
       <Badge className={"absolute top-2 right-2"}>{course.level}</Badge>
@@ -18,6 +19,8 @@ export function PublicCourseCard({ course }) {
         width={600}
         height={400}
         className="w-full rounded-t-xl aspect-video h-full object-cover "
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
       <CardContent>
         <Link
@@ -51,4 +54,4 @@ export function PublicCourseCard({ course }) {
       </CardContent>
     </Card>
   );
-}
+});

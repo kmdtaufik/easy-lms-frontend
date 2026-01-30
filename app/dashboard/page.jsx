@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     checkAuthAndFetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkAuthAndFetchData = async () => {
@@ -122,6 +123,25 @@ export default function DashboardPage() {
     }
   };
 
+  // Memoize computed values to avoid recalculating on every render
+  const completedLessonsCount = useMemo(() => {
+    return userProgress.reduce(
+      (sum, item) => sum + item.progress.completedLessons,
+      0
+    );
+  }, [userProgress]);
+
+  const activeCoursesCount = useMemo(() => {
+    return enrolledCourses.filter(
+      (course) => course.status === "active"
+    ).length;
+  }, [enrolledCourses]);
+
+  // Create a Set of enrolled course IDs for O(1) lookup instead of O(n) with .some()
+  const enrolledCourseIds = useMemo(() => {
+    return new Set(enrolledCourses.map((enrollment) => enrollment.course._id));
+  }, [enrolledCourses]);
+
   const getStatusColor = (status) => {
     switch (status) {
       case "completed":
@@ -205,10 +225,7 @@ export default function DashboardPage() {
                 <CheckCircle2 className="h-8 w-8 text-green-600" />
                 <div>
                   <p className="text-2xl font-bold">
-                    {userProgress.reduce(
-                      (sum, item) => sum + item.progress.completedLessons,
-                      0
-                    )}
+                    {completedLessonsCount}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Completed Lessons
@@ -224,11 +241,7 @@ export default function DashboardPage() {
                 <PlayCircle className="h-8 w-8 text-blue-600" />
                 <div>
                   <p className="text-2xl font-bold">
-                    {
-                      enrolledCourses.filter(
-                        (course) => course.status === "active"
-                      ).length
-                    }
+                    {activeCoursesCount}
                   </p>
                   <p className="text-sm text-muted-foreground">In Progress</p>
                 </div>
@@ -306,6 +319,7 @@ export default function DashboardPage() {
                           alt={enrollment.course.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
@@ -438,9 +452,8 @@ export default function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {latestCourses.map((course) => {
-              const isEnrolled = enrolledCourses.some(
-                (enrollment) => enrollment.course._id === course._id
-              );
+              // Use Set for O(1) lookup instead of O(n) with .some()
+              const isEnrolled = enrolledCourseIds.has(course._id);
 
               return (
                 <Card
@@ -456,6 +469,7 @@ export default function DashboardPage() {
                           alt={course.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">

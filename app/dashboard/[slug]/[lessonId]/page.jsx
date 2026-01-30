@@ -51,6 +51,7 @@ export default function LessonPage({ params }) {
       fetchLessonData();
       fetchLessonProgress();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, lessonId]);
 
   const fetchLessonData = async () => {
